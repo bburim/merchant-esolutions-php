@@ -1,8 +1,8 @@
 {
-    "name": "opendns/merchant-esolutions-php",
+    "name": "bburim/merchant-esolutions-php",
     "description": "A client library for Merchant e-Solutions' payment gateway and other APIs",
     "keywords": ["merchant e-solutions", "trident", "mes", "payment", "credit card"],
-    "homepage": "https://github.com/opendns/merchant-esolutions-php",
+    "homepage": "https://github.com/bburim/merchant-esolutions-php",
     "license": "BSD-3-Clause",
     "authors": [
         {
