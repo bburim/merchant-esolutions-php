@@ -1,7 +1,7 @@
 <?php
 namespace OpenDNS\MES;
-use Guzzle\Http\Client;
-use Guzzle\Http\QueryString;
+
+use GuzzleHttp\Client;
 
 /**
  * Base abstract for all MeS APIs
@@ -30,13 +30,9 @@ abstract class Request
     /** @var string[] key/value pairs to be set by default on new requests */
     protected $defaultFieldValues = array();
 
-    /** @var Guzzle\Http\Client Guzzle HTTP client instance */
+    /** @var GuzzleHttp\Client Guzzle HTTP client instance */
     private $httpClient;
 
-    /** @var Guzzle\Http\Message\Request Guzzle request object */
-    private $request;
-
-    /** @var Guzzle\Http\Message\Response Guzzle response object */
     private $response;
 
     private $requestFields = array();
@@ -67,26 +63,18 @@ abstract class Request
     /**
      * Run the request and return the response body
      *
-     * @return Guzzle\Http\Stream\StreamInterface A Guzzle stream object representing the response body
      */
     public function execute()
     {
         $this->response = null;
         $httpMethod = strtolower($this->httpMethod);
-
-        $dataParam = $this->httpMethod === 'GET' ? 'query' : 'body';
-
-        $request = $this->getClient()
-                        ->$httpMethod($this->getApiUrl());
-
         if ($this->httpMethod === 'GET' || $this->httpMethod === 'HEAD') {
-            $request->getQuery()
-                    ->replace($this->requestFields);
+            $params = array('query' => $this->requestFields);
         } else {
-            $request = $request->setBody($this->requestFields);
+            $params = array('form_params' => $this->requestFields);
         }
 
-        $this->response = $request->send();
+        $this->response = $this->getClient()->$httpMethod($this->getApiUrl(), $params);
 
         return $this->processResponse($this->response->getBody());
     }
@@ -125,7 +113,7 @@ abstract class Request
     /**
      * Return a singleton Guzzle HTTP client
      *
-     * @return Guzzle\Http\Client
+     * @return GuzzleHttp\Client
      */
     protected function getClient()
     {
@@ -177,7 +165,6 @@ abstract class Request
     /**
      * Allows child classes to post-process the results before returning them
      *
-     * @param Guzzle\Http\Stream\StreamInterface $response The Guzzle stream object returned by execute()
      * @return Response An object representing the MeS response
      */
     protected function processResponse($response)
