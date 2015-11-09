@@ -8,15 +8,11 @@ namespace OpenDNS\MES;
  */
 class Response implements \ArrayAccess
 {
-    /** @var Guzzle\Http\Message\Response Raw Guzzle response from the contructor args */
     protected $guzzleResponse;
 
     /** @var string[] Parsed keys/values from the MeS response body */
     protected $fields = array();
 
-    /**
-     *  @param Guzzle\Http\Message\Response $guzzleResponse Raw Guzzle response from the contructor args
-     */
     public function __construct($guzzleResponse)
     {
         $this->guzzleResponse = $guzzleResponse;
